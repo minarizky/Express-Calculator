@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Express Calculator</h1>
+        <form id="calculator-form">
+            <label for="numbers">Enter numbers (comma-separated):</label>
+            <input type="text" id="numbers" name="numbers" required>
+
+            <label for="operation">Choose an operation:</label>
+            <select id="operation" name="operation" required>
+                <option value="mean">Mean</option>
+                <option value="median">Median</option>
+                <option value="mode">Mode</option>
+            </select>
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        <div id="result">
+            <h2>Result:</h2>
+            <p id="result-value"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculator-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const numbers = document.getElementById('numbers').value;
+            const operation = document.getElementById('operation').value;
+
+            fetch(`/${operation}?nums=${numbers}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result-value').textContent = `Error: ${data.error}`;
+                    } else {
+                        document.getElementById('result-value').textContent = `The ${operation} is ${data.value}`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('result-value').textContent = `Error: ${error.message}`;
+                });
+        });
+    </script>
+</body>
+</html>
